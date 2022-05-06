@@ -35,4 +35,3 @@ app.get("/", (req, res) => {
     //res.send("Root resource - Up and running!")
     res.render("index");
 });
-
