@@ -1,8 +1,16 @@
 <%- include("_header") -%>
 
+<h1>Customer Export</h1>
+<h3>Total number of records in the database:</h3>
 <h3>Click on submit to export all database records to export.csv</h3>
-<form action="/output" method="post">
-    <input type="submit" id="submit" value="Download">
+<form action="/export" method="post">
+    <table>
+        <tr>
+            <td>File Name</td>
+            <td><input type="text" name="filename" id="filename" value="export.txt" /></td>
+        </tr>
+    </table>
+    <input type="submit" id="submit" value="Export Customers">
 </form>
 <% if(message.substring(0,5) === "Error") { %>
     <h2>Error!</h2>

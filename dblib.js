@@ -119,7 +119,26 @@ const findCustomer = (customer) => {
     });
   }
 
+const exportCustomer = (filename)=>{
+    const sql = "SELECT * FROM customer ORDER BY custId";
+    pool.query(sql, [], (err, result) => {
+        var message = "";
+        if(err) {
+            message = `Error - ${err.message}`;
+            res.render("export", { message: message })
+        } else {
+            var output = "";
+            result.rows.forEach(customer => {
+                output += `${customer.custId},${customer.cusFname},${customer.cusLname},${customer.cusState},${customer.cusSalesYTD}${customer.cusSalesPrev}\r\n`;
+               });
+            res.header("Content-Type", "text/csv");
+            res.attachment("filename");
+            return res.send(output), message;
+        };
+    });
+}
 
 module.exports.findCustomer = findCustomer;
 module.exports.getTotalRecords = getTotalRecords;
 module.exports.insertCustomer = insertCustomer;
+module.exports.exportCustomer = exportCustomer
