@@ -1,22 +1,20 @@
 <%- include("_header") -%>
 
-<h1>Create New Customer</h1>
+<h1>Customer Update</h1>
 
-<form action="/create" method="post">
+<form action="/edit/<%=cust.custId %>" method="post">
   <div>
     <table>
       <tr>
-        <td><label for="cusId">ID</label>:</td>
+        <td><label readonly for="cusId">ID</label>:</td>
         <td><input type="number" name="cusId" id="cusId" value="<%= cust.cusId %>" required/></td>
         <td>(Reequired)</td>
       </tr>
-      
       <%- include("_editor") -%>
 
       <tr>
         <td span="2">
-          <input type="submit" value="Save" class="btn btn-default btn-success"/>
-          <a class="btn btn-outline-dark cancel" href="/create">Reset</a>
+          <input type="submit" value="Update Customer" class="btn btn-default btn-success"/>
       </td>
      </tr>
     </table>
@@ -24,9 +22,9 @@
 </form>
 <% if (type === "post") { %>
   <% if (message === "success") { %>
-      <h3>New Customer Created!</h3>
+      <h3> Customer Updated Successfully!</h3>
   <% } else { %>
-    <h3> Error Creating New Customer</h3>
+    <h3> Error Updating Customer</h3>
     <h4><%= message %></h4> <% }} %>
 
-<%- include("_footer") -%>
+    <%- include("_footer") -%>

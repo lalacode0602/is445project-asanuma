@@ -35,3 +35,168 @@ app.get("/", (req, res) => {
     //res.send("Root resource - Up and running!")
     res.render("index");
 });
+
+// search route
+app.get("/manage", async (req, res) => {
+    // Omitted validation check
+    const totRecs = await dblib.getTotalRecords();
+    //Create an empty product object (To populate form with values)
+    const cust = {
+        cusId: "",
+        cusFname: "",
+        cusLname: "",
+        cusState: "",
+        cusSalesYTD: "",
+        cusSalesPrev: ""
+    };
+    res.render("manage", {
+        type: "get",
+        totRecs: totRecs.totRecords,
+        cust: cust
+    });
+  });
+
+// Post search
+app.post("/manage", async (req, res) => {
+      console.log("dblib.findCustomer req.body is:", req.body)
+    // Omitted validation check
+    //  Can get this from the page rather than using another DB call.
+    //  Add it as a hidden form value.
+    const totRecs = await dblib.getTotalRecords();
+  
+    dblib.findCustomer(req.body)
+        .then(result => {
+            console.log("dblib.findCustomer result is:", result);
+            res.render("manage", {
+                type: "post",
+                totRecs: totRecs.totRecords,
+                result: result,
+                cust: req.body
+            })
+        })
+        .catch(err => {
+            res.render("manage", {
+                type: "post",
+                totRecs: totRecs.totRecords,
+                result: `Unexpected Error: ${err.message}`,
+                cust: req.body
+            });
+        });
+  });
+
+// GET /create
+app.get("/create", (req, res) => {
+    // const cust = await dblib.cust();
+    const cust = {
+        cusId: "",
+        cusFname: "",
+        cusLname: "",
+        cusState: "",
+        cusSalesYTD: "",
+        cusSalesPrev: ""
+    };
+    res.render("create", {type: "get",  
+    cust: cust,
+    message: ""});
+  });
+
+  // POST /create
+app.post("/create", async (req, res) => {
+    // const cust = await dblib.cust(req.body);
+    // const sql = "INSERT INTO customer (cusid, cusfname, cuslname, cusstate, cussalesytd, cusslesprev) VALUES ($1, $2, $3, $4, $5, $6)";
+    const customer = req.body;
+    await dblib.insertCustomer(customer)
+        .then(result => {
+            res.render("create", {
+                type: "post",
+                cust: customer,
+                message: "success"
+            })
+        })
+        .catch(err => {
+            res.render("create", {
+                type: "post",
+                cust: customer,
+                message: `Error - ${err.message}`
+            })
+        })
+    // pool.query(sql, customer, (err, result) => {
+    //   if (err){
+    //   res.render("create", {
+    //     type: "post",  
+    //     cust: req.body,
+    //     message: `Error - ${err}`
+    //   });}else{
+    //       res.render("create", {
+    //           type: "post",
+    //           cust: req.body,
+    //           message: "success"
+    //       })
+    //   };
+    //});
+  });
+
+
+  // GET /edit/5
+app.get("/edit/:id", (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT * FROM customer WHERE custId = $1";
+    pool.query(sql, [id], (err, result) => {
+      // if (err) ...
+      res.render("edit", { cust: result.rows[0] });
+    });
+  });
+  
+  // POST /edit/5
+  app.post("/edit/:id", (req, res) => {
+    const id = req.params.id;
+    const customer = [id, req.body.cusFname, req.body.cusLname, req.body.cusState, req.body.cusSalesYTD, req.body.cusSalesPrev];
+    console.log(customer);
+    const sql = "UPDATE customer SET cusFname = $2,  cusLname= $3, cusState = $4, cusSalesYTD = $5, cusSalesPrev = $6 WHERE (cusId = $1)";
+    pool.query(sql, customer, (err, result) => {
+      // if (err) ...
+      if (err){
+        res.render("create", {
+          type: "post",  
+          cust: req.body,
+          message: `Error - ${err}`
+        });}else{
+            res.render("create", {
+                type: "post",
+                cust: req.body,
+                message: "success"
+            })
+        };
+    });
+  });
+
+  // GET /delete/5
+app.get("/delete/:id", (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT * FROM custmer WHERE custId = $1";
+    pool.query(sql, [id], (err, result) => {
+      // if (err) ...
+      res.render("delete", { cust: result.rows[0] });
+    });
+  });
+  
+  // POST /delete/5
+  app.post("/delete/:id", (req, res) => {
+    const id = req.params.id;
+    const sql = "DELETE FROM customer WHERE custId = $1";
+    pool.query(sql, [id], (err, result) => {
+      // if (err) ...
+      if (err){
+        res.render("create", {
+          type: "post",  
+          cust: req.body,
+          message: `Error - ${err}`
+        });}else{
+            res.render("create", {
+                type: "post",
+                cust: req.body,
+                message: "success"
+            })
+        };
+    });
+  });

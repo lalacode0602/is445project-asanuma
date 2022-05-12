@@ -1,0 +1,49 @@
+<%- include("_header") -%>
+
+<h1>Are you sure you want to delete this Customer?</h1>
+
+<form action="/create" method="post">
+  <div>
+    <table>
+
+      <tr>
+        <td><label for="cusId">ID</label>:</td>
+        <td><input readonly type="number" name="cusId" id="cusId" value="<%= cust.cusId %>" required/></td>
+      </tr>
+      <tr>
+        <td><label for="cusFname">First Name</label>:</td>
+        <td><input readonly type="text" name="cusFname" id="cusFname" value="<%= cust.cusFname %>" required/></td>
+      </tr>
+      <tr>
+      <td><label for="cusLname">Last Name</label>:</td>
+      <td><input readonly type="text" name="cusLname" id="cusLname" value="<%= cust.cusLname %>" required/></td>
+      </tr>
+      <tr>
+        <td><label for="cusState">State</label>:</td>
+        <td><input readonly type="text" name="cusState" id="cusState" maxlength="2" value="<%= cust.cusState %>" /></td>
+      </tr>
+      <tr>
+        <td><label for="cusSalesYTD">Sales YTD</label>:</td>
+        <td><input readonly type="number" name="cusSalesYTD" id="cusSalesYTD" value="<%= cust.cusSalesYTD %>" /></td>
+      </tr>
+      <tr>
+      <td><label for="cusSalesPrev">Previous Years Sales</label>:</td>
+      <td><input readonly type="number" name="cusSalesPrev" id="cusSalesPrev" value="<%= cust.cusSalesPrev %>" /></td>
+      </tr>
+
+      <tr>
+        <td span="2">
+          <input type="submit" value="Delete Customer" class="btn btn-default btn-danger"/>
+      </td>
+     </tr>
+    </table>
+  </div>
+</form>
+<% if (type === "post") { %>
+  <% if (message === "success") { %>
+      <h3> Customer Deleted Successfully!</h3>
+  <% } else { %>
+    <h3> Error Deleting Customer</h3>
+    <h4><%= message %></h4> <% }} %>
+
+<%- include("_footer") -%>

@@ -1,33 +1,91 @@
 <%- include("_header") -%>
 
-<h1>List of books (<%= model.length %>)</h1>
+<h2> Find Products</h2>
 
-<div class="table-responsive-sm">
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Comments</th>
-        <th class="d-print-none">
-          <a class="btn btn-sm btn-success" href="/create">Add</a>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <% for (const book of model) { %>
+<h4>Total number of records in the database: <%= totRecs %></h4>
+
+<!-- Not using bootstrap, just a simple form that you may enhance -->
+<form action="/manage" method="POST">
+    <table>
         <tr>
-          <td><%= book.title %></td>
-          <td><%= book.author %></td>
-          <td><%= book.comments %></td>
-          <td class="d-print-none">
-            <a class="btn btn-sm btn-warning" href="/edit/<%= book.book_id %>">Edit</a>
-            <a class="btn btn-sm btn-danger" href="/delete/<%= book.book_id %>">Delete</a>
-          </td>
+            <td><label for="cusId">ID</label>:</td>
+            <td><input type="number" name="cusId" id="cusId" value="<%= cust.cusId %>" /></td>
+            <td>(equal)</td>
         </tr>
-      <% } %>
-    </tbody>
-  </table>
-</div>
+        <tr>
+            <td><label for="cusFname">First Name</label>:</td>
+            <td><input type="text" name="cusFname" id="cusFname" value="<%= cust.cusFname %>" /></td>
+            <td>(begins with)</td>
+        </tr>
+        <tr>
+          <td><label for="cusLname">Last Name</label>:</td>
+          <td><input type="text" name="cusLname" id="cusLname" value="<%= cust.cusLname %>" /></td>
+          <td>(begins with)</td>
+      </tr>
+        <tr>
+            <td><label for="cusState">State</label>:</td>
+            <td><input type="text" name="cusState" id="cusState" maxlength="2" value="<%= cust.cusState %>" /></td>
+            <td>(equal)</td>
+        </tr>
+        <tr>
+            <td><label for="cusSalesYTD">Sales YTD</label>:</td>
+            <td><input type="number" name="cusSalesYTD" id="cusSalesYTD" value="<%= cust.cusSalesYTD %>" /></td>
+            <td>(greater than or equal to)</td>
+        </tr>
+        <tr>
+          <td><label for="cusSalesPrev">Previous Years Sales</label>:</td>
+          <td><input type="number" name="cusSalesPrev" id="cusSalesPrev" value="<%= cust.cusSalesPrev %>" /></td>
+          <td>(greater than or equal to)</td>
+      </tr>
+        <tr>
+            <td span="2">
+                <input type="submit" value="Find" class="btn btn-default btn-success" />
+                <input type="reset" value="Reset" class="btn btn-outline-dark cancel" />
+            </td>
+        </tr>
+    </table>
+</form>
 
-<%- include("_footer") -%>
+<!-- Omitted Error Checking / Needs to be added -->
+<% if (type === "post") { %>
+    <% if (result.result.length === 0) { %>
+        <h3>No records found!</h3>
+    <% } else { %>
+      <div class="table-responsive-sm">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>State</th>
+                    <th>Sales YTD</th>
+                    <th>Prev Years Sales</th>
+                    <th class="d-print-none">
+                      <a class="btn btn-sm btn-success" href="/create">Create Customer</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% result.result.forEach(customer => { %> 
+                    <tr>
+                        <td><%= customer.cusId %></td>
+                        <td><%= customer.cusFname %></td>
+                        <td><%= customer.cusLname %></td>
+                        <td><%= customer.cusState %></td>
+                        <td><%= customer.cusSalesYTD %></td>
+                        <td><%= customer.cusSalesPrev %></td>
+                        <td class="d-print-none">
+                          <a class="btn btn-sm btn-warning" href="/edit/<%= customer.cusId %>">Edit</a>
+                          <a class="btn btn-sm btn-danger" href="/delete/<%= customer.cusId %>">Delete</a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+
+        </table>
+      </div>
+    <% } %>
+<% } %>
+
+<%- include("_footer") -%> 

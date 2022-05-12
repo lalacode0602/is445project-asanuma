@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS customer;
 
 CREATE TABLE customer (
-    cusId        INTEGER PRIMARY KEY,
-    cusFname     VARCHAR(20) NOT NULL,
+  cusId        INTEGER PRIMARY KEY,
+  cusFname     VARCHAR(20) NOT NULL,
 	cusLname     VARCHAR(30) NOT NULL,
 	cusState     CHAR(2),
 	cusSalesYTD  MONEY,
