@@ -6,6 +6,8 @@ const dblib = require("./dblib.js");
 const multer = require("multer");
 const upload = multer();
 
+
+
 // Add middleware to parse default urlencoded form
 app.use(express.urlencoded({ extended: false }));
 
@@ -110,7 +112,7 @@ app.post("/create", async (req, res) => {
             res.render("create", {
                 type: "post",
                 cust: customer,
-                message: "success"
+                message: message
             })
         })
         .catch(err => {
@@ -138,36 +140,53 @@ app.post("/create", async (req, res) => {
 
 
   // GET /edit/5
-app.get("/edit/:id", (req, res) => {
-    const id = req.params.id;
-    const sql = "SELECT * FROM customer WHERE custId = $1";
-    pool.query(sql, [id], (err, result) => {
-      // if (err) ...
-      res.render("edit", { cust: result.rows[0] });
-    });
+app.get("/edit/:id", async (req, res) => {
+    const id = req.params.id;   
+    // const sql = "SELECT * FROM customer WHERE custId = $1";
+    // pool.query(sql, [id], (err, result) => {
+    //   // if (err) ...
+    //   res.render("edit", { cust: result.rows[0] });
+    // });
+    const selected = await dblib.selectCustomer(id)
+    res.render("edit", {cust:selected.cust})  
   });
   
   // POST /edit/5
-  app.post("/edit/:id", (req, res) => {
+  app.post("/edit/:id", async (req, res) => {
     const id = req.params.id;
     const customer = [id, req.body.cusFname, req.body.cusLname, req.body.cusState, req.body.cusSalesYTD, req.body.cusSalesPrev];
     console.log(customer);
-    const sql = "UPDATE customer SET cusFname = $2,  cusLname= $3, cusState = $4, cusSalesYTD = $5, cusSalesPrev = $6 WHERE (cusId = $1)";
-    pool.query(sql, customer, (err, result) => {
-      // if (err) ...
-      if (err){
-        res.render("create", {
-          type: "post",  
-          cust: req.body,
-          message: `Error - ${err}`
-        });}else{
-            res.render("create", {
-                type: "post",
-                cust: req.body,
-                message: "success"
-            })
-        };
-    });
+    const message = await dblib.editCustomer(customer)
+    // const sql = "UPDATE customer SET cusFname = $2,  cusLname= $3, cusState = $4, cusSalesYTD = $5, cusSalesPrev = $6 WHERE (cusId = $1)";
+    // pool.query(sql, customer, (err, result) => {
+    //   // if (err) ...
+    //   if (err){
+    //     res.render("create", {
+    //       type: "post",  
+    //       cust: req.body,
+    //       message: `Error - ${err}`
+    //     });}else{
+    //         res.render("create", {
+    //             type: "post",
+    //             cust: req.body,
+    //             message: "success"
+    //         })
+    //     };
+    // });
+    .then(result => {
+        res.render("edit", {
+            type: "post",
+            cust: customer,
+            message: message
+        })
+    })
+    .catch(err => {
+        res.render("edit", {
+            type: "post",
+            cust: customer,
+            message: `Error - ${err.message}`
+        })
+    })
   });
 
   // GET /delete/5
@@ -242,10 +261,20 @@ app.get("/export", (req, res) => {
    });
 
    
-app.post("/export", (req, res) => {
+app.post("/export", async (req, res) => {
+    const totRecs = await dblib.getTotalRecords();
     filename = req.body;
     dblib.exportCustomer(filename)
         .then(result => {
-            message: message
+            res.render("export", {
+                message: message,
+                totRecs: totRecs
+            })
+        })
+        .catch(err =>{
+            res.render("export", {
+                message: message,
+                totRecs: totRecs
+            })
         })
 });

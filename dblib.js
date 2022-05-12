@@ -138,7 +138,39 @@ const exportCustomer = (filename)=>{
     });
 }
 
+const selectCustomer = (id) => {
+    const sql = "SELECT * FROM customer WHERE custId = $1";
+    return pool.query(sql, [id])
+        .then(result => {
+            return{
+                cust: result.rows[0],
+                message: "success"
+            }
+        })
+        .catch(err =>{
+            return{
+                cust:[],
+                message: `Error- ${err.message}`
+            }
+        })
+}
+
+const editCustomer = (customer) => {
+    const sql = "UPDATE customer SET cusFname = $2,  cusLname= $3, cusState = $4, cusSalesYTD = $5, cusSalesPrev = $6 WHERE (cusId = $1)";
+    return pool.query(sql, customer)
+        .then(result => {
+            return "success"
+        })
+        .catch(err => {
+            return `Error -${err.message}`
+        })
+}
+
+
+
 module.exports.findCustomer = findCustomer;
 module.exports.getTotalRecords = getTotalRecords;
 module.exports.insertCustomer = insertCustomer;
-module.exports.exportCustomer = exportCustomer
+module.exports.exportCustomer = exportCustomer;
+module.exports.editCustomer = editCustomer;
+module.exports.selectCustomer = selectCustomer;
