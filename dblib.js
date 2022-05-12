@@ -36,38 +36,38 @@ const findCustomer = (customer) => {
     sql = "SELECT * FROM customer WHERE true";
   
     // Check data provided and build query as necessary
-    if (customer.cusId !== "") {
-        params.push(parseInt(customer.cusId));
-        sql += ` AND cusId = $${i}`;
+    if (customer.cusid !== "") {
+        params.push(parseInt(customer.cusid));
+        sql += ` AND cusid = $${i}`;
         i++;
     };
     if (customer.cusFname !== "") {
-        params.push(`${customer.cusFname}%`);
-        sql += ` AND UPPER(cusFname) LIKE UPPER($${i})`;
+        params.push(`${customer.cusfname}%`);
+        sql += ` AND UPPER(cusfname) LIKE UPPER($${i})`;
         i++;
     };
-    if (customer.cusLname !== "") {
-        params.push(`${customer.cusLname}%`);
-        sql += ` AND UPPER(cusLname) LIKE UPPER($${i})`;
+    if (customer.cuslname !== "") {
+        params.push(`${customer.cuslname}%`);
+        sql += ` AND UPPER(cuslname) LIKE UPPER($${i})`;
         i++;
     };
-    if (customer.cusState !== "") {
-        params.push(`${customer.cusState}%`);
-        sql += ` AND UPPER(cusState) LIKE UPPER($${i})`;
+    if (customer.cusstate !== "") {
+        params.push(`${customer.cusstate}%`);
+        sql += ` AND UPPER(cusstate) LIKE UPPER($${i})`;
         i++;
     };
-    if (customer.cusSalesYTD !== "") {
-        params.push(parseFloat(customer.cusSalesYTD));
-        sql += ` AND cusSalesYTD >= $${i}`;
+    if (customer.cussalesytd !== "") {
+        params.push(parseFloat(customer.cussalesytd));
+        sql += ` AND cussalesytd >= $${i}`;
         i++;
     };
-    if (customer.cusSalesPrev !== "") {
-        params.push(parseFloat(customer.cusSalesPrev));
-        sql += ` AND cusSalesPrev >= $${i}`;
+    if (customer.cussalesprev !== "") {
+        params.push(parseFloat(customer.cussalesprev));
+        sql += ` AND cussalesprev >= $${i}`;
         i++;
     };
   
-    sql += ` ORDER BY cusId`;
+    sql += ` ORDER BY cusid`;
     // for debugging
      console.log("sql: " + sql);
      console.log("params: " + params);
@@ -127,7 +127,7 @@ const findCustomer = (customer) => {
   }
 
 const exportCustomer = (filename)=>{
-    const sql = "SELECT * FROM customer ORDER BY custId";
+    const sql = "SELECT * FROM customer ORDER BY cusid";
     pool.query(sql, [], (err, result) => {
         var message = "";
         if(err) {
@@ -163,7 +163,7 @@ const selectCustomer = (id) => {
 }
 
 const editCustomer = (customer) => {
-    const sql = "UPDATE customer SET cusFname = $2,  cusLname= $3, cusState = $4, cusSalesYTD = $5, cusSalesPrev = $6 WHERE (cusId = $1)";
+    const sql = "UPDATE customer SET cusfname = $2,  cuslname= $3, cusstate = $4, cussalesytd = $5, cussalesprev = $6 WHERE (cusid = $1)";
     return pool.query(sql, customer)
         .then(result => {
             return "success"

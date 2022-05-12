@@ -141,19 +141,19 @@ app.post("/create", (req, res) => {
 
   // GET /edit/5
 app.get("/edit/:cusid", async (req, res) => {
-    const id = req.params.id;   
+    const id = req.params.cusid;   
     // const sql = "SELECT * FROM customer WHERE custId = $1";
     // pool.query(sql, [id], (err, result) => {
     //   // if (err) ...
     //   res.render("edit", { cust: result.rows[0] });
     // });
     const selected = await dblib.selectCustomer(id)
-    res.render("edit", {cust:selected.cust})  
+    res.render("edit", {type: "get", cust:selected.cust, message:""})  
   });
   
   // POST /edit/5
   app.post("/edit/:cusid", async (req, res) => {
-    const id = req.params.id;
+    // const id = req.params.cusid;
     const customer = req.body;
     console.log(customer);
     const message = await dblib.editCustomer(customer)
@@ -191,8 +191,8 @@ app.get("/edit/:cusid", async (req, res) => {
 
   // GET /delete/5
 app.get("/delete/:cusid", (req, res) => {
-    const id = req.params.id;
-    const sql = "SELECT * FROM custmer WHERE custId = $1";
+    const id = req.params.cusid;
+    const sql = "SELECT * FROM custmer WHERE custid = $1";
     pool.query(sql, [id], (err, result) => {
       // if (err) ...
       res.render("delete", { cust: result.rows[0] });
@@ -201,8 +201,8 @@ app.get("/delete/:cusid", (req, res) => {
   
   // POST /delete/5
   app.post("/delete/:cusid", (req, res) => {
-    const id = req.params.id;
-    const sql = "DELETE FROM customer WHERE custId = $1";
+    const id = req.params.cusid;
+    const sql = "DELETE FROM customer WHERE custid = $1";
     pool.query(sql, [id], (err, result) => {
       // if (err) ...
       if (err){
