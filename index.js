@@ -237,10 +237,10 @@ app.post("/import",  upload.single('filename'), (req, res) => {
     const buffer = req.file.buffer; 
     const lines = buffer.toString().split(/\r?\n/);
   
-    (async() => { lines.forEach(line => {
+    lines.forEach(line => {
         //console.log(line);
         customer = line.split(",");
-        console.log(customer);
+        console.log(line);
         // const sql = "INSERT INTO customer (cusid, cusfname, cuslname, cusstate, cussalesytd, cusslesprev) VALUES ($1, $2, $3, $4, $5, $6)";
         // pool.query(sql, customer, (err, result) => {
         //     if (err) {
@@ -249,9 +249,9 @@ app.post("/import",  upload.single('filename'), (req, res) => {
         //         console.log(`Inserted successfully`);
         //     }
         // });
-        const lineinsert = await dblib.insertCustomer(customer);
+        const lineinsert = dblib.insertCustomer(customer);
         console.log(lineinsert.desc);
-    })})()
+    })
       .then(result => {
           message = `Processing Complete - Processed ${lines.length} records`,
             res.send(message)})
