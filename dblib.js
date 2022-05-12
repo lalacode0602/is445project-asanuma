@@ -102,18 +102,25 @@ const findCustomer = (customer) => {
 
 
   const insertCustomer = (customer) => {
+    if (customer instanceof Array) {
+        params = product;
+    } else {
+        params = Object.values(customer);
+    };
     const sql = "INSERT INTO customer (cusid, cusfname, cuslname, cusstate, cussalesytd, cusslesprev) VALUES ($1, $2, $3, $4, $5, $6)";
-    return pool.query(sql, customer)
+    return pool.query(sql, params)
         .then(result => {
             console.log("inserted");
             return { 
-                message: "success"
+                message: "success",
+                desc: `customer id ${params[0]} successfully inserted`
                 //result: result.rows
             }
         })
         .catch(err => {
             return {
-                message: "Error"
+                message: "Error",
+                desc: `Error on insert of product id ${params[0]}.  ${err.message}`
                 //result: `Error: ${err.message}`
             }
     });

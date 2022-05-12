@@ -103,11 +103,11 @@ app.get("/create", (req, res) => {
   });
 
   // POST /create
-app.post("/create", async (req, res) => {
+app.post("/create", (req, res) => {
     // const cust = await dblib.cust(req.body);
     // const sql = "INSERT INTO customer (cusid, cusfname, cuslname, cusstate, cussalesytd, cusslesprev) VALUES ($1, $2, $3, $4, $5, $6)";
     const customer = req.body;
-    await dblib.insertCustomer(customer)
+    dblib.insertCustomer(customer)
         .then(result => {
             res.render("create", {
                 type: "post",
@@ -237,7 +237,7 @@ app.post("/import",  upload.single('filename'), (req, res) => {
     const buffer = req.file.buffer; 
     const lines = buffer.toString().split(/\r?\n/);
   
-    lines.forEach(line => {
+    (async() => { lines.forEach(line => {
         //console.log(line);
         customer = line.split(",");
         console.log(customer);
@@ -249,8 +249,9 @@ app.post("/import",  upload.single('filename'), (req, res) => {
         //         console.log(`Inserted successfully`);
         //     }
         // });
-        dblib.insertCustomer(customer);
-    })
+        const lineinsert = await dblib.insertCustomer(customer);
+        console.log(lineinsert.desc);
+    })})()
       .then(result => {
           message = `Processing Complete - Processed ${lines.length} records`,
             res.send(message)})
