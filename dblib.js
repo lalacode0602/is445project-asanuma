@@ -103,7 +103,7 @@ const findCustomer = (customer) => {
 
   const insertCustomer = (customer) => {
     if (customer instanceof Array) {
-        params = product;
+        params = customer;
     } else {
         params = Object.values(customer);
     };
