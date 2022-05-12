@@ -2,12 +2,12 @@
 
 <h1>Customer Update</h1>
 
-<form action="/edit/<%=cust.custId %>" method="post">
+<form action="/edit/<%=cust.custid %>" method="post">
   <div>
     <table>
       <tr>
-        <td><label readonly for="cusId">ID</label>:</td>
-        <td><input type="number" name="cusId" id="cusId" value="<%= cust.cusId %>" required/></td>
+        <td><label readonly for="cusid">ID</label>:</td>
+        <td><input type="number" name="cusid" id="cusid" value="<%= cust.cusid %>" required/></td>
         <td>(Reequired)</td>
       </tr>
       <%- include("_editor") -%>

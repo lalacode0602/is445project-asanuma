@@ -140,7 +140,7 @@ app.post("/create", (req, res) => {
 
 
   // GET /edit/5
-app.get("/edit/:id", async (req, res) => {
+app.get("/edit/:cusid", async (req, res) => {
     const id = req.params.id;   
     // const sql = "SELECT * FROM customer WHERE custId = $1";
     // pool.query(sql, [id], (err, result) => {
@@ -152,7 +152,7 @@ app.get("/edit/:id", async (req, res) => {
   });
   
   // POST /edit/5
-  app.post("/edit/:id", async (req, res) => {
+  app.post("/edit/:cusid", async (req, res) => {
     const id = req.params.id;
     const customer = req.body;
     console.log(customer);
@@ -190,7 +190,7 @@ app.get("/edit/:id", async (req, res) => {
   });
 
   // GET /delete/5
-app.get("/delete/:id", (req, res) => {
+app.get("/delete/:cusid", (req, res) => {
     const id = req.params.id;
     const sql = "SELECT * FROM custmer WHERE custId = $1";
     pool.query(sql, [id], (err, result) => {
@@ -200,7 +200,7 @@ app.get("/delete/:id", (req, res) => {
   });
   
   // POST /delete/5
-  app.post("/delete/:id", (req, res) => {
+  app.post("/delete/:cusid", (req, res) => {
     const id = req.params.id;
     const sql = "DELETE FROM customer WHERE custId = $1";
     pool.query(sql, [id], (err, result) => {
