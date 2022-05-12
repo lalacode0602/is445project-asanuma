@@ -154,7 +154,7 @@ app.get("/edit/:id", async (req, res) => {
   // POST /edit/5
   app.post("/edit/:id", async (req, res) => {
     const id = req.params.id;
-    const customer = [id, req.body.cusFname, req.body.cusLname, req.body.cusState, req.body.cusSalesYTD, req.body.cusSalesPrev];
+    const customer = req.body;
     console.log(customer);
     const message = await dblib.editCustomer(customer)
     // const sql = "UPDATE customer SET cusFname = $2,  cusLname= $3, cusState = $4, cusSalesYTD = $5, cusSalesPrev = $6 WHERE (cusId = $1)";
@@ -222,8 +222,10 @@ app.get("/delete/:id", (req, res) => {
 
 
 ////Get INPUT
-app.get("/import", (req, res) => {
-    res.render("import");
+app.get("/import", async (req, res) => {
+    const totRecs = await dblib.getTotalRecords();
+    message = "";
+    res.render("import", {totRecs: totRecs.totRecords, message: message});
   });
   
 app.post("/import",  upload.single('filename'), (req, res) => {
@@ -248,16 +250,20 @@ app.post("/import",  upload.single('filename'), (req, res) => {
         //     }
         // });
         dblib.insertCustomer(customer);
-    });
-    message = `Processing Complete - Processed ${lines.length} records`;
-    res.send(message);
+    })
+      .then(result => {
+          message = `Processing Complete - Processed ${lines.length} records`,
+            res.send(message)})
+      .catch(err => {
+          message = `Error: ${err.message}`;});
 });
 
 
 /////OUTPUT
-app.get("/export", (req, res) => {
-    var message = "";
-    res.render("export",{ message: message });
+app.get("/export", async (req, res) => {
+    const totRecs = await dblib.getTotalRecords();
+    let message = "";
+    res.render("export",{ totRecs: totRecs.totRecords, message: message });
    });
 
    
@@ -268,13 +274,13 @@ app.post("/export", async (req, res) => {
         .then(result => {
             res.render("export", {
                 message: message,
-                totRecs: totRecs
+                totRecs: totRecs.totRecords
             })
         })
         .catch(err =>{
             res.render("export", {
                 message: message,
-                totRecs: totRecs
+                totRecs: totRecs.totRecords
             })
         })
 });

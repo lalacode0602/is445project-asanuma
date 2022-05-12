@@ -107,14 +107,14 @@ const findCustomer = (customer) => {
         .then(result => {
             console.log("inserted");
             return { 
-                message: "success",
-                result: result.rows
+                message: "success"
+                //result: result.rows
             }
         })
         .catch(err => {
             return {
-                message: "Error",
-                result: `Error: ${err.message}`
+                message: "Error"
+                //result: `Error: ${err.message}`
             }
     });
   }
