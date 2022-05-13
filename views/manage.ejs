@@ -24,7 +24,7 @@
       </tr>
         <tr>
             <td><label for="cusstate">State</label>:</td>
-            <td><input type="text" name="cusstate" id="cusstate" maxlength="2" value="<%= cust.cusstate %>" /></td>
+            <td><input type="text" name="cusstate" id="cusstate" pattern="[A-Za-z]{2}" value="<%= cust.cusstate %>" /></td>
             <td>(equal)</td>
         </tr>
         <tr>

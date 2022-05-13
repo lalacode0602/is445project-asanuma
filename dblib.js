@@ -107,7 +107,7 @@ const findCustomer = (customer) => {
     } else {
         params = Object.values(customer);
     };
-    const sql = "INSERT INTO customer (cusid, cusfname, cuslname, cusstate, cussalesytd, cusslesprev) VALUES ($1, $2, $3, $4, $5, $6)";
+    const sql = "INSERT INTO customer (cusid, cusfname, cuslname, cusstate, cussalesytd, cussalesprev) VALUES ($1, $2, $3, $4, $5, $6)";
     return pool.query(sql, params)
         .then(result => {
             console.log("inserted");
@@ -126,45 +126,46 @@ const findCustomer = (customer) => {
     });
   }
 
-const exportCustomer = (filename)=>{
+const exportCustomer = ()=>{
     const sql = "SELECT * FROM customer ORDER BY cusid";
-    pool.query(sql, [], (err, result) => {
-        var message = "";
-        if(err) {
+    return pool.query(sql, [])
+        .then(result =>{
+            message = "export succeeded"
+            return { records: result.rows, message: message}
+        })
+        .catch(err => {
             message = `Error - ${err.message}`;
-            res.render("export", { message: message })
-        } else {
-            var output = "";
-            result.rows.forEach(customer => {
-                output += `${customer.custId},${customer.cusFname},${customer.cusLname},${customer.cusState},${customer.cusSalesYTD}${customer.cusSalesPrev}\r\n`;
-               });
-            res.header("Content-Type", "text/csv");
-            res.attachment("filename");
-            return res.send(output), message;
-        };
-    });
-}
+            return {message: message }
+        })
+    };
+
 
 const selectCustomer = (id) => {
-    const sql = "SELECT * FROM customer WHERE custId = $1";
+    const sql = "SELECT * FROM customer WHERE cusid = $1";
     return pool.query(sql, [id])
         .then(result => {
+            console.log("Inside select customer:", result.rows[0])
             return{
                 cust: result.rows[0],
-                message: "success"
+                // message: `successfully selected`
             }
         })
         .catch(err =>{
             return{
                 cust:[],
-                message: `Error- ${err.message}`
+                // message: `Error- ${err.message}`
             }
         })
 }
 
 const editCustomer = (customer) => {
+    if (customer instanceof Array) {
+        params = customer;
+    } else {
+        params = Object.values(customer);
+    };
     const sql = "UPDATE customer SET cusfname = $2,  cuslname= $3, cusstate = $4, cussalesytd = $5, cussalesprev = $6 WHERE (cusid = $1)";
-    return pool.query(sql, customer)
+    return pool.query(sql, params)
         .then(result => {
             return "success"
         })
@@ -173,7 +174,17 @@ const editCustomer = (customer) => {
         })
 }
 
-
+const deleteCustomer = (id) => {
+    const sql = "DELETE FROM customer WHERE cusid = $1";
+    return pool.query(sql, [id])
+        .then(result => {
+            message = "success"
+            return message
+        })
+        .catch(err => {
+            return err.message
+        })
+}
 
 module.exports.findCustomer = findCustomer;
 module.exports.getTotalRecords = getTotalRecords;
@@ -181,3 +192,4 @@ module.exports.insertCustomer = insertCustomer;
 module.exports.exportCustomer = exportCustomer;
 module.exports.editCustomer = editCustomer;
 module.exports.selectCustomer = selectCustomer;
+module.exports.deleteCustomer = deleteCustomer;

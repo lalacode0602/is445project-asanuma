@@ -2,15 +2,33 @@
 
 <h1>Customer Update</h1>
 
-<form action="/edit/<%=cust.custid %>" method="post">
+<form action="/edit/<%=cust.cusid %>" method="post">
   <div>
     <table>
       <tr>
-        <td><label readonly for="cusid">ID</label>:</td>
-        <td><input type="number" name="cusid" id="cusid" value="<%= cust.cusid %>" required/></td>
-        <td>(Reequired)</td>
+        <td><label for="cusid">ID</label>:</td>
+        <td><input readonly type="number" name="cusid" id="cusid" value="<%= cust.cusid %>" required/></td>
       </tr>
-      <%- include("_editor") -%>
+      <tr>
+        <td><label for="cusfname">First Name</label>:</td>
+        <td><input type="text" name="cusfname" id="cusfname" value="<%= cust.cusfname %>" required/></td>
+      </tr>
+      <tr>
+      <td><label for="cuslname">Last Name</label>:</td>
+      <td><input type="text" name="cuslname" id="cuslname" value="<%= cust.cuslname %>" required/></td>
+      </tr>
+      <tr>
+        <td><label for="cusstate">State</label>:</td>
+        <td><input type="text" name="cusstate" id="cusstate" maxlength="2" value="<%= cust.cusstate %>" required/></td>
+      </tr>
+      <tr>
+        <td><label for="cussalesytd">Sales YTD</label>:</td>
+        <td><input type="number" name="cussalesytd" id="cussalesytd" value="<%= cust.cussalesytd %>" required/></td>
+      </tr>
+      <tr>
+      <td><label for="cussalesprev">Previous Years Sales</label>:</td>
+      <td><input type="number" name="cussalesprev" id="cussalesprev" value="<%= cust.cussalesprev %>" required/></td>
+      </tr>
 
       <tr>
         <td span="2">
